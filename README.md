@@ -4,7 +4,6 @@ Go library for encoding native Go structures into generic map values.
 
 [![GoDoc](https://godoc.org/github.com/things-go/mapstruct?status.svg)](https://godoc.org/github.com/things-go/mapstruct)
 [![Go.Dev reference](https://img.shields.io/badge/go.dev-reference-blue?logo=go&logoColor=white)](https://pkg.go.dev/github.com/things-go/mapstruct?tab=doc)
-[![codecov](https://codecov.io/gh/things-go/mapstruct/branch/main/graph/badge.svg)](https://codecov.io/gh/things-go/mapstruct)
 ![Action Status](https://github.com/things-go/mapstruct/workflows/Go/badge.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/things-go/mapstruct)](https://goreportcard.com/report/github.com/things-go/mapstruct)
 [![Licence](https://img.shields.io/github/license/things-go/mapstruct)](https://raw.githubusercontent.com/things-go/mapstruct/main/LICENSE)
