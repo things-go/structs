@@ -1,5 +1,3 @@
-module github.com/things-labs/cicd-go-template
+module github.com/things-go/mapstruct
 
 go 1.15
-
-require github.com/stretchr/testify v1.7.0
