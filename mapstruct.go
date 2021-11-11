@@ -136,33 +136,46 @@ func EncodeWithTag(input interface{}, tagName string) map[string]interface{} {
 			}
 			continue
 		}
-
 		if opts.Contains("string") {
 			if str := toString(fv); str != nil {
 				m[keyName] = str
 				continue
 			}
 		}
-		if (fv.Kind() == reflect.Struct) ||
-			(fv.Kind() == reflect.Ptr && fv.Elem().Kind() == reflect.Struct) {
-			m[keyName] = EncodeWithTag(fv.Interface(), tagName)
+		if isEmptyValue(fv) {
+			m[keyName] = fv.Interface()
 			continue
 		}
-		m[keyName] = fv.Interface()
+		fv = reflect.Indirect(fv)
+		switch fv.Kind() {
+		case reflect.Struct:
+			m[keyName] = EncodeWithTag(fv.Interface(), tagName)
+		case reflect.Array, reflect.Slice:
+			m[keyName] = encodeSlice(fv, tagName)
+
+		case reflect.Map:
+			switch fv.Interface().(type) {
+			case map[string]interface{}:
+				m[keyName] = fv.Interface()
+			}
+		default:
+			m[keyName] = fv.Interface()
+		}
 	}
 	return m
 }
 
 func toString(fv reflect.Value) interface{} {
-	switch k := fv.Kind(); k {
+	vv := reflect.Indirect(fv)
+	switch k := vv.Kind(); k {
 	case reflect.Bool:
-		return strconv.FormatBool(fv.Bool())
+		return strconv.FormatBool(vv.Bool())
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-		return strconv.FormatInt(fv.Int(), 10)
+		return strconv.FormatInt(vv.Int(), 10)
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		return strconv.FormatUint(fv.Uint(), 10)
+		return strconv.FormatUint(vv.Uint(), 10)
 	case reflect.Float32, reflect.Float64:
-		return strconv.FormatFloat(fv.Float(), 'f', 2, 64)
+		return strconv.FormatFloat(vv.Float(), 'f', -1, 64)
 		// TODO: support other types
 	}
 	return nil
@@ -184,4 +197,30 @@ func isEmptyValue(v reflect.Value) bool {
 		return v.IsNil()
 	}
 	return false
+}
+
+func encodeSlice(v reflect.Value, tagName string) interface{} {
+	switch ii := v.Interface(); ii.(type) {
+	case []bool, []int, []int8, []int16, []int32, []int64,
+		[]uint, []uint8, []uint16, []uint32, []uint64, []uintptr,
+		[]float32, []float64, []string:
+		return ii
+	default:
+		result := make([]interface{}, 0, v.Len())
+		for i := 0; i < v.Len(); i++ {
+			field := v.Index(i)
+			field = reflect.Indirect(field)
+			if field.IsZero() {
+				continue
+			}
+			switch field.Kind() {
+			case reflect.Struct:
+				result = append(result, EncodeWithTag(field.Interface(), tagName))
+			}
+		}
+		if len(result) > 0 {
+			return result
+		}
+	}
+	return nil
 }
