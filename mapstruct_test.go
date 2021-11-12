@@ -1,24 +1,17 @@
 package mapstruct
 
 import (
-	"encoding/json"
-	"fmt"
 	"reflect"
 	"testing"
 )
 
 type UnExportedAndIgnore struct {
 	unexported string
-	IgnoreInt  int `map:"-"`
+	Ignore     int `map:"-"`
 }
 
-type ToString struct {
-	Number json.Number
-	Bool   bool    `map:",string"`
-	Int    int     `map:",string"`
-	Uint   uint    `map:",string"`
-	Float  float64 `map:",string"`
-	Array  []byte  `map:",string"`
+type NotSupportToString struct {
+	ToString []byte `map:"to_string,string"`
 }
 
 type Bool struct {
@@ -115,46 +108,25 @@ type Ignore struct {
 	Func           func()                 `map:"func,omitempty"`
 }
 
-type FieldStruct struct {
-	FieldID        int    `map:"field_id"`
-	FieldOmitValue string `map:"-"`
-}
-
 type EmbedStruct struct {
 	EmbedID        int    `map:"embed_id"`
 	EmbedOmitValue string `map:"-"`
 }
 
 type EmbedPtrStruct struct {
-	EmbedPtrName string `map:"embed_ptr_name"`
+	EmbedID int `map:"embed_id"`
 }
 
-// 	EmbedStruct
-//	*EmbedPtrStruct
-// Field1            FieldStruct   `map:"field1"`
-// FieldPtrStruct    *FieldStruct  `map:"field_ptr_struct"`
-// Field2            []FieldStruct `map:"field2,omitempty"`
-// Field3            []FieldStruct `map:"field3"`
-// Field4            []FieldStruct `map:"field4"`
+type FieldStruct struct {
+	ID     int    `map:"id"`
+	Ignore string `map:"-"`
+}
 
-var str = "test_string"
-var f func()
+// var str = "test_string"
+// var f func()
 
-func TestEncode(t *testing.T) {
-	var (
-		False      bool
-		True       = true
-		IntZero    int
-		IntOne     = 1
-		UintZero   uint
-		UintOne    uint = 1
-		FloatZero  float64
-		FloatOne   float64 = 1
-		StringZero string
-		StringOne  = "1"
-		SliceZero  = []byte{}
-		SliceOne   = []byte{}
-	)
+func TestEncodeNotAStruct(t *testing.T) {
+	var ()
 
 	tests := []struct {
 		name string
@@ -166,32 +138,73 @@ func TestEncode(t *testing.T) {
 			"not a struct",
 			nil,
 		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Encode(tt.args); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Encode() = %#v, want %#v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestEncodeUnexportedAndIgnore(t *testing.T) {
+	tests := []struct {
+		name string
+		args interface{}
+		want map[string]interface{}
+	}{
 		{
 			"unExported and ignore",
 			UnExportedAndIgnore{
 				unexported: "111",
-				IgnoreInt:  111,
+				Ignore:     111,
 			},
 			map[string]interface{}{},
 		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Encode(tt.args); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Encode() = %#v, want %#v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestEncodeToStringNotSupport(t *testing.T) {
+	tests := []struct {
+		name string
+		args interface{}
+		want map[string]interface{}
+	}{
 		{
-			"to string",
-			ToString{
-				Number: json.Number("555"),
-				Bool:   true,
-				Int:    11,
-				Uint:   22,
-				Float:  3.33,
+			"not a struct",
+			NotSupportToString{
+				[]byte{1, 2},
 			},
 			map[string]interface{}{
-				"Number": json.Number("555"),
-				"Bool":   "true",
-				"Int":    "11",
-				"Uint":   "22",
-				"Float":  "3.33",
-				"Array":  []byte(nil),
+				"to_string": []byte{1, 2},
 			},
 		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Encode(tt.args); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Encode() = %#v, want %#v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestEncodeBool(t *testing.T) {
+	var False bool
+
+	tests := []struct {
+		name string
+		args interface{}
+		want map[string]interface{}
+	}{
 		{
 			"bool",
 			Bool{
@@ -199,16 +212,16 @@ func TestEncode(t *testing.T) {
 				NotEmpty:        true,
 				NotOmitEmpty:    false,
 				OmitEmptyPtr:    nil,
-				NotEmptyPtr:     &True,
-				NotOmitEmptyPtr: &False,
+				NotEmptyPtr:     &False,
+				NotOmitEmptyPtr: nil,
 			},
 			map[string]interface{}{
 				// "omit_empty": false, // ignore
 				"not_empty":      true,
 				"not_omit_empty": false,
 				// "omit_empty_ptr":     false, // ignore
-				"not_empty_ptr":      true,
-				"not_omit_empty_ptr": false,
+				"not_empty_ptr":      false,
+				"not_omit_empty_ptr": (*bool)(nil),
 			},
 		},
 		{
@@ -218,18 +231,38 @@ func TestEncode(t *testing.T) {
 				NotEmpty:        true,
 				NotOmitEmpty:    false,
 				OmitEmptyPtr:    nil,
-				NotEmptyPtr:     &True,
-				NotOmitEmptyPtr: &False,
+				NotEmptyPtr:     &False,
+				NotOmitEmptyPtr: nil,
 			},
 			map[string]interface{}{
 				// "omit_empty": false, // ignore
 				"not_empty":      "true",
 				"not_omit_empty": "false",
 				// "omit_empty_ptr":     false, // ignore
-				"not_empty_ptr":      "true",
-				"not_omit_empty_ptr": "false",
+				"not_empty_ptr":      "false",
+				"not_omit_empty_ptr": (*bool)(nil),
 			},
 		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Encode(tt.args); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Encode() = %#v, want %#v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestEncodeInt(t *testing.T) {
+	var (
+		IntZero int
+		IntOne  = 1
+	)
+	tests := []struct {
+		name string
+		args interface{}
+		want map[string]interface{}
+	}{
 		{
 			"int",
 			Int{
@@ -238,7 +271,7 @@ func TestEncode(t *testing.T) {
 				NotOmitEmpty:    IntZero,
 				OmitEmptyPtr:    nil,
 				NotEmptyPtr:     &IntOne,
-				NotOmitEmptyPtr: &IntZero,
+				NotOmitEmptyPtr: nil,
 			},
 			map[string]interface{}{
 				// "omit_empty": IntZero, // ignore
@@ -246,7 +279,7 @@ func TestEncode(t *testing.T) {
 				"not_omit_empty": IntZero,
 				// "omit_empty_ptr":     IntZero, // ignore
 				"not_empty_ptr":      IntOne,
-				"not_omit_empty_ptr": IntZero,
+				"not_omit_empty_ptr": (*int)(nil),
 			},
 		},
 		{
@@ -257,7 +290,7 @@ func TestEncode(t *testing.T) {
 				NotOmitEmpty:    IntZero,
 				OmitEmptyPtr:    nil,
 				NotEmptyPtr:     &IntOne,
-				NotOmitEmptyPtr: &IntZero,
+				NotOmitEmptyPtr: nil,
 			},
 			map[string]interface{}{
 				// "omit_empty": "0", // ignore
@@ -265,9 +298,29 @@ func TestEncode(t *testing.T) {
 				"not_omit_empty": "0",
 				// "omit_empty_ptr":     "0", // ignore
 				"not_empty_ptr":      "1",
-				"not_omit_empty_ptr": "0",
+				"not_omit_empty_ptr": (*int)(nil),
 			},
 		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Encode(tt.args); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Encode() = %#v, want %#v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestEncodeUint(t *testing.T) {
+	var (
+		UintZero uint
+		UintOne  uint = 1
+	)
+	tests := []struct {
+		name string
+		args interface{}
+		want map[string]interface{}
+	}{
 		{
 			"uint",
 			Uint{
@@ -276,7 +329,7 @@ func TestEncode(t *testing.T) {
 				NotOmitEmpty:    UintZero,
 				OmitEmptyPtr:    nil,
 				NotEmptyPtr:     &UintOne,
-				NotOmitEmptyPtr: &UintZero,
+				NotOmitEmptyPtr: nil,
 			},
 			map[string]interface{}{
 				// "omit_empty": UintZero, // ignore
@@ -284,7 +337,7 @@ func TestEncode(t *testing.T) {
 				"not_omit_empty": UintZero,
 				// "omit_empty_ptr":     UintZero, // ignore
 				"not_empty_ptr":      UintOne,
-				"not_omit_empty_ptr": UintZero,
+				"not_omit_empty_ptr": (*uint)(nil),
 			},
 		},
 		{
@@ -295,7 +348,7 @@ func TestEncode(t *testing.T) {
 				NotOmitEmpty:    UintZero,
 				OmitEmptyPtr:    nil,
 				NotEmptyPtr:     &UintOne,
-				NotOmitEmptyPtr: &UintZero,
+				NotOmitEmptyPtr: nil,
 			},
 			map[string]interface{}{
 				// "omit_empty": "0", // ignore
@@ -303,9 +356,29 @@ func TestEncode(t *testing.T) {
 				"not_omit_empty": "0",
 				// "omit_empty_ptr":     "0", // ignore
 				"not_empty_ptr":      "1",
-				"not_omit_empty_ptr": "0",
+				"not_omit_empty_ptr": (*uint)(nil),
 			},
 		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Encode(tt.args); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Encode() = %#v, want %#v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestEncodeFloat(t *testing.T) {
+	var (
+		FloatZero float64
+		FloatOne  float64 = 1
+	)
+	tests := []struct {
+		name string
+		args interface{}
+		want map[string]interface{}
+	}{
 		{
 			"float",
 			Float{
@@ -314,7 +387,7 @@ func TestEncode(t *testing.T) {
 				NotOmitEmpty:    FloatZero,
 				OmitEmptyPtr:    nil,
 				NotEmptyPtr:     &FloatOne,
-				NotOmitEmptyPtr: &FloatZero,
+				NotOmitEmptyPtr: nil,
 			},
 			map[string]interface{}{
 				// "omit_empty": FloatZero, // ignore
@@ -322,7 +395,7 @@ func TestEncode(t *testing.T) {
 				"not_omit_empty": FloatZero,
 				// "omit_empty_ptr":     FloatZero, // ignore
 				"not_empty_ptr":      FloatOne,
-				"not_omit_empty_ptr": FloatZero,
+				"not_omit_empty_ptr": (*float64)(nil),
 			},
 		},
 		{
@@ -333,7 +406,7 @@ func TestEncode(t *testing.T) {
 				NotOmitEmpty:    FloatZero,
 				OmitEmptyPtr:    nil,
 				NotEmptyPtr:     &FloatOne,
-				NotOmitEmptyPtr: &FloatZero,
+				NotOmitEmptyPtr: nil,
 			},
 			map[string]interface{}{
 				// "omit_empty": "0", // ignore
@@ -341,9 +414,27 @@ func TestEncode(t *testing.T) {
 				"not_omit_empty": "0",
 				// "omit_empty_ptr":     "0", // ignore
 				"not_empty_ptr":      "1",
-				"not_omit_empty_ptr": "0",
+				"not_omit_empty_ptr": (*float64)(nil),
 			},
 		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Encode(tt.args); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Encode() = %#v, want %#v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestEncodeString(t *testing.T) {
+	var StringZero string
+
+	tests := []struct {
+		name string
+		args interface{}
+		want map[string]interface{}
+	}{
 		{
 			"string",
 			String{
@@ -351,18 +442,38 @@ func TestEncode(t *testing.T) {
 				NotEmpty:        "1",
 				NotOmitEmpty:    "",
 				OmitEmptyPtr:    nil,
-				NotEmptyPtr:     &StringOne,
-				NotOmitEmptyPtr: &StringZero,
+				NotEmptyPtr:     &StringZero,
+				NotOmitEmptyPtr: nil,
 			},
 			map[string]interface{}{
 				// "omit_empty": "", // ignore
 				"not_empty":      "1",
 				"not_omit_empty": "",
 				// "omit_empty_ptr":     "", // ignore
-				"not_empty_ptr":      "1",
-				"not_omit_empty_ptr": "",
+				"not_empty_ptr":      "",
+				"not_omit_empty_ptr": (*string)(nil),
 			},
 		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Encode(tt.args); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Encode() = %#v, want %#v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestEncodeSlice(t *testing.T) {
+	var (
+		SliceZero = []byte{}
+		SliceOne  = []byte{}
+	)
+	tests := []struct {
+		name string
+		args interface{}
+		want map[string]interface{}
+	}{
 		{
 			"slice",
 			Slice{
@@ -382,6 +493,37 @@ func TestEncode(t *testing.T) {
 				"not_omit_empty_ptr": SliceZero,
 			},
 		},
+		{
+			"slice struct",
+			struct {
+				OmitEmpty       []FieldStruct  `map:"omit_empty,omitempty"` // ignore
+				NotEmpty        []FieldStruct  `map:"not_empty,omitempty"`
+				NotOmitEmpty    []FieldStruct  `map:"not_omit_empty"`
+				OmitEmptyPtr    *[]FieldStruct `map:"omit_empty_ptr,omitempty"` // ignore
+				NotEmptyPtr     *[]FieldStruct `map:"not_empty_ptr,omitempty"`
+				NotOmitEmptyPtr *[]FieldStruct `map:"not_omit_empty_ptr"`
+			}{
+				OmitEmpty:    []FieldStruct{},
+				NotEmpty:     []FieldStruct{{ID: 1}, {ID: 2}},
+				OmitEmptyPtr: nil,
+				NotEmptyPtr:  &[]FieldStruct{{ID: 1}, {ID: 2}},
+				// NotOmitEmptyPtr: nil,
+			},
+			map[string]interface{}{
+				// "omit_empty": "", // ignore
+				"not_empty": []interface{}{
+					map[string]interface{}{"id": 1},
+					map[string]interface{}{"id": 2},
+				},
+				"not_omit_empty": []FieldStruct(nil), // TODO: struct空值问题
+				// "omit_empty_ptr":     "", // ignore
+				"not_empty_ptr": []interface{}{
+					map[string]interface{}{"id": 1},
+					map[string]interface{}{"id": 2},
+				},
+				"not_omit_empty_ptr": (*[]FieldStruct)(nil),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -392,37 +534,92 @@ func TestEncode(t *testing.T) {
 	}
 }
 
-// func BenchmarkEncode(b *testing.B) {
-// 	for i := 0; i < b.N; i++ {
-// 		Encode(&Exist{
-// 			true, 1, "no_empty_string", &str,
-// 			false, 0, "", nil,
-// 			100, 0,
-// 			"",
-// 			FieldStruct{
-// 				111,
-// 				"FieldOmitValue",
-// 			},
-// 			&FieldStruct{
-// 				222,
-// 				"FieldOmitValue",
-// 			},
-// 			EmbedStruct{333, "EmbedOmitValue"},
-// 			&EmbedPtrStruct{"EmbedPtrStruct"},
-// 		})
-// 	}
-// }
-
-func TestName(t *testing.T) {
-	var a [4]byte
-
-	vv := reflect.ValueOf(a)
-
-	switch s := vv.Interface().(type) {
-	case []byte:
-		fmt.Println(s)
-	default:
-
+func TestEncodeEmbedStruct(t *testing.T) {
+	tests := []struct {
+		name string
+		args interface{}
+		want map[string]interface{}
+	}{
+		{
+			"embed struct",
+			struct {
+				EmbedStruct
+			}{
+				EmbedStruct: EmbedStruct{
+					EmbedID: 111,
+				},
+			},
+			map[string]interface{}{
+				"embed_id": 111,
+			},
+		},
+		{
+			"embed struct ptr",
+			struct {
+				*EmbedPtrStruct
+			}{
+				EmbedPtrStruct: &EmbedPtrStruct{
+					EmbedID: 111,
+				},
+			},
+			map[string]interface{}{
+				"embed_id": 111,
+			},
+		},
+		{
+			"embed struct ptr but nil",
+			struct {
+				*EmbedPtrStruct
+			}{},
+			map[string]interface{}{},
+		},
 	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Encode(tt.args); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Encode() = %#v, want %#v", got, tt.want)
+			}
+		})
+	}
+}
 
+func TestEncodeFieldStruct(t *testing.T) {
+	tests := []struct {
+		name string
+		args interface{}
+		want map[string]interface{}
+	}{
+		{
+			"embed struct",
+			struct {
+				Field           FieldStruct  `map:"field"`
+				OmitEmptyPtr    *FieldStruct `map:"omit_empty_ptr,omitempty"`
+				NotEmptyPtr     *FieldStruct `map:"not_empty_ptr"`
+				NotOmitEmptyPtr *FieldStruct `map:"not_omit_empty_ptr"`
+			}{
+				Field:           FieldStruct{ID: 111},
+				OmitEmptyPtr:    nil,
+				NotEmptyPtr:     &FieldStruct{ID: 222},
+				NotOmitEmptyPtr: nil,
+			},
+			map[string]interface{}{
+				"field":              map[string]interface{}{"id": 111},
+				"not_empty_ptr":      map[string]interface{}{"id": 222},
+				"not_omit_empty_ptr": (*FieldStruct)(nil),
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Encode(tt.args); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Encode() = %#v, want %#v", got, tt.want)
+			}
+		})
+	}
+}
+
+func BenchmarkEncode(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		Encode(&IntString{})
+	}
 }

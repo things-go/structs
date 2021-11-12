@@ -146,18 +146,15 @@ func EncodeWithTag(input interface{}, tagName string) map[string]interface{} {
 			m[keyName] = fv.Interface()
 			continue
 		}
+
 		fv = reflect.Indirect(fv)
 		switch fv.Kind() {
 		case reflect.Struct:
 			m[keyName] = EncodeWithTag(fv.Interface(), tagName)
 		case reflect.Array, reflect.Slice:
 			m[keyName] = encodeSlice(fv, tagName)
-
-		case reflect.Map:
-			switch fv.Interface().(type) {
-			case map[string]interface{}:
-				m[keyName] = fv.Interface()
-			}
+		// case reflect.Map: // TODO: support map
+		//
 		default:
 			m[keyName] = fv.Interface()
 		}
@@ -208,19 +205,16 @@ func encodeSlice(v reflect.Value, tagName string) interface{} {
 	default:
 		result := make([]interface{}, 0, v.Len())
 		for i := 0; i < v.Len(); i++ {
-			field := v.Index(i)
-			field = reflect.Indirect(field)
+			field := reflect.Indirect(v.Index(i))
 			if field.IsZero() {
 				continue
 			}
-			switch field.Kind() {
-			case reflect.Struct:
+			if field.Kind() == reflect.Struct {
 				result = append(result, EncodeWithTag(field.Interface(), tagName))
+			} else {
+				break
 			}
 		}
-		if len(result) > 0 {
-			return result
-		}
+		return result
 	}
-	return nil
 }
