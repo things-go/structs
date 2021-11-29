@@ -1,26 +1,26 @@
-# mapstruct
+# structs
 
 Go library for encoding native Go structures into generic map values.
 
-[![GoDoc](https://godoc.org/github.com/things-go/mapstruct?status.svg)](https://godoc.org/github.com/things-go/mapstruct)
-[![Go.Dev reference](https://img.shields.io/badge/go.dev-reference-blue?logo=go&logoColor=white)](https://pkg.go.dev/github.com/things-go/mapstruct?tab=doc)
-![Action Status](https://github.com/things-go/mapstruct/workflows/Go/badge.svg)
-[![Go Report Card](https://goreportcard.com/badge/github.com/things-go/mapstruct)](https://goreportcard.com/report/github.com/things-go/mapstruct)
-[![Licence](https://img.shields.io/github/license/things-go/mapstruct)](https://raw.githubusercontent.com/things-go/mapstruct/main/LICENSE)
-[![Tag](https://img.shields.io/github/v/tag/things-go/mapstruct)](https://github.com/things-go/mapstruct/tags)
+[![GoDoc](https://godoc.org/github.com/things-go/structs?status.svg)](https://godoc.org/github.com/things-go/structs)
+[![Go.Dev reference](https://img.shields.io/badge/go.dev-reference-blue?logo=go&logoColor=white)](https://pkg.go.dev/github.com/things-go/structs?tab=doc)
+![Action Status](https://github.com/things-go/structs/workflows/Go/badge.svg)
+[![Go Report Card](https://goreportcard.com/badge/github.com/things-go/structs)](https://goreportcard.com/report/github.com/things-go/structs)
+[![Licence](https://img.shields.io/github/license/things-go/structs)](https://raw.githubusercontent.com/things-go/structs/main/LICENSE)
+[![Tag](https://img.shields.io/github/v/tag/things-go/structs)](https://github.com/things-go/structs/tags)
 
 ### Installation
 
 Use go get.
 
 ```bash
-    go get -u github.com/things-go/mapstruct
+    go get -u github.com/things-go/structs
 ```
 
-Then import the mapstruct package into your own code.
+Then import the structs package into your own code.
 
 ```go
-    import "github.com/things-go/mapstruct"
+    import "github.com/things-go/structs"
 ```
 
 ### Usage && Example
@@ -40,23 +40,23 @@ func EncodeWithTag(input interface{}, tagName string) map[string]interface{}
 This function converts a struct to map. To use this function, import it first:
 
 ```go
-import "github.com/things-go/mapstruct"
+import "github.com/things-go/structs"
 ```
 
 Here is an example:
 
 ```go
-m := mapstruct.Encode(struct {
+m := structs.Encode(struct {
     Id      int64
     Name    string
     }{
         Id:        1001,
-        Name:      "mapstruct",
+        Name:      "structs",
     })
 /*
     map[string]interface{}{
         "Id": 1001,  
-        "Name": "mapstruct",
+        "Name": "structs",
     }
 */
 ```

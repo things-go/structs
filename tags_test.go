@@ -1,15 +1,19 @@
-// Copyright 2011 The Go Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
-
-package mapstruct
+package structs
 
 import (
 	"testing"
 )
 
 func TestTagParsing(t *testing.T) {
-	name, opts := parseTag("field,foobar,foo")
+	name, opts := parseTag("")
+	if name != "" {
+		t.Fatalf("name = %q, want ''", name)
+	}
+	if opts.Contains("foobar") == true {
+		t.Errorf("Contains(%q) = %v", "foobar", false)
+	}
+
+	name, opts = parseTag("field,foobar,foo")
 	if name != "field" {
 		t.Fatalf("name = %q, want field", name)
 	}

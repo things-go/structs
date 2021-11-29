@@ -1,4 +1,4 @@
-package mapstruct
+package structs
 
 import (
 	"reflect"

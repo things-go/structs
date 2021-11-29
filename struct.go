@@ -1,24 +1,24 @@
-// Package mapstruct Go library for encoding native Go structures into generic map values.
+// Package structs Go library for encoding native Go structures into generic map values.
 //
 // The simplest function to start with is Encoded.
 //
 // Field Tags
 //
-// When encode to a map[string]interface{}, mapstruct will use the field
+// When encode to a map[string]interface{}, structs will use the field
 // name by default to perform the mapping. For example, if a struct has
-// a field "Username" then mapstruct will use a key "Username".
+// a field "Username" then structs will use a key "Username".
 //
 //     type User struct {
 //         Username string
 //     }
 //
-// You can change the behavior of mapstruct by using struct tags.
-// The default struct tag that mapstruct looks for is "map"
+// You can change the behavior of structs by using struct tags.
+// The default struct tag that structs looks for is "map"
 // but you can customize it using EncodeWithTag.
 //
 // Renaming Fields
 //
-// To rename the key that mapstruct looks for, use the "map" tag and
+// To rename the key that structs looks for, use the "map" tag and
 // set a value directly. For example, to change the "username" example
 // above to "user":
 //
@@ -76,9 +76,10 @@
 //     map[string]interface{}{
 //         "Public":  "I made it through!",
 //     }
-package mapstruct
+package structs
 
 import (
+	"fmt"
 	"reflect"
 	"strconv"
 )
@@ -173,7 +174,12 @@ func toString(fv reflect.Value) interface{} {
 		return strconv.FormatUint(vv.Uint(), 10)
 	case reflect.Float32, reflect.Float64:
 		return strconv.FormatFloat(vv.Float(), 'f', -1, 64)
-		// TODO: support other types
+	// TODO: support other types
+	default:
+		s, ok := fv.Interface().(fmt.Stringer)
+		if ok {
+			return s.String()
+		}
 	}
 	return nil
 }
