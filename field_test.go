@@ -15,7 +15,7 @@ type Foo struct {
 	d string // not exported
 	E *Baz
 	// not exported, with tag
-	x    string `xml:"x"`
+	x    string `xml:"x"` // nolint: govet
 	Y    []string
 	Z    map[string]interface{}
 	*Bar // embedded
@@ -39,6 +39,7 @@ func newStruct() *Struct {
 		C: true,
 		d: "small",
 		E: nil,
+		x: "",
 		Y: []string{"example"},
 		Z: nil,
 		Bar: &Bar{
