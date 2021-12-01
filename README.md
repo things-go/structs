@@ -4,7 +4,7 @@ Go library for encoding native Go structures into generic map values.
 
 [![GoDoc](https://godoc.org/github.com/things-go/structs?status.svg)](https://godoc.org/github.com/things-go/structs)
 [![Go.Dev reference](https://img.shields.io/badge/go.dev-reference-blue?logo=go&logoColor=white)](https://pkg.go.dev/github.com/things-go/structs?tab=doc)
-![Action Status](https://github.com/things-go/structs/workflows/Go/badge.svg)
+[![Tests](https://github.com/things-go/structs/actions/workflows/ci.yml/badge.svg)](https://github.com/things-go/structs/actions/workflows/ci.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/things-go/structs)](https://goreportcard.com/report/github.com/things-go/structs)
 [![Licence](https://img.shields.io/github/license/things-go/structs)](https://raw.githubusercontent.com/things-go/structs/main/LICENSE)
 [![Tag](https://img.shields.io/github/v/tag/things-go/structs)](https://github.com/things-go/structs/tags)
