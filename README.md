@@ -27,42 +27,55 @@ Then import the structs package into your own code.
 
 #### API
 
-```go
-// Encode takes an input structure and uses reflection to translate it to
-// the output map[string]interface{} with default tag "map"
-func Encode(input interface{}) map[string]interface{}
-
-// Encode takes an input structure and uses reflection to translate it to
-// the output map[string]interface{} with the custom tag name
-func EncodeWithTag(input interface{}, tagName string) map[string]interface{}
-```
-
-This function converts a struct to map. To use this function, import it first:
+Just like the standard lib strings, bytes and co packages, structs has many global functions to manipulate or organize your struct data. Lets define and declare a struct:
 
 ```go
-import "github.com/things-go/structs"
+type Server struct {
+    Name        string `json:"name,omitempty"`
+    ID          int
+    Enabled     bool
+    users       []string // not exported
+    http.Server          // embedded
+}
+
+server := &Server{
+    Name:    "gopher",
+    ID:      123456,
+    Enabled: true,
+}
 ```
 
 Here is an example:
 
 ```go
-m := structs.Encode(struct {
-    Id      int64
-    Name    string
-    }{
-        Id:        1001,
-        Name:      "structs",
-    })
-/*
-    map[string]interface{}{
-        "Id": 1001,  
-        "Name": "structs",
-    }
-*/
-```
+// Convert a struct to a map[string]interface{}
+// => {"Name":"gopher", "ID":123456, "Enabled":true}
+m := structs.Map(server)
 
-Encode will create and return a new map from the given struct. The keys of the map will be the
-name of fields. The values will be the value of fields.
+// Convert the values of a struct to a []interface{}
+// => ["gopher", 123456, true]
+v := structs.Values(server)
+
+// Convert the names of a struct to a []string
+// (see "Names methods" for more info about fields)
+n := structs.Names(server)
+
+// Convert the values of a struct to a []*Field
+// (see "Field methods" for more info about fields)
+f := structs.Fields(server)
+
+// Return the struct name => "Server"
+n := structs.Name(server)
+
+// Check if any field of a struct is initialized or not.
+h := structs.HasZero(server)
+
+// Check if all fields of a struct is initialized or not.
+z := structs.IsZero(server)
+
+// Check if server is a struct or a pointer to struct
+i := structs.IsStruct(server)
+```
 
 Only [public fields](https://golang.org/doc/effective_go.html#names) will be processed. So **fields
 starting with lowercase will be ignored**.
@@ -96,6 +109,17 @@ type AA struct {
 If tag option is "omitempty", this field will not appear in the map if the value is empty.
 Empty values are 0, false, "", nil, empty array and empty map.
 
+#### Omit Nested
+
+```go
+type AA struct {
+    // Field is not processed further by this package.
+    Field *http.Request `map:",omitnested"`
+}
+```
+A value with the option of "omitnested" stops iterating further if the type
+is a struct. it do not converted value if a value are no exported fields, ie: time.Time
+
 #### To String
 
 ```go
@@ -110,6 +134,7 @@ original value to the map if the conversion is failed.
 ## References
 
 - [mapstructure](https://github.com/mitchellh/mapstructure)
+- [structs](github.com/fatih/structs)
 
 ## License
 
