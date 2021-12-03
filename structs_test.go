@@ -1006,6 +1006,11 @@ func TestMapSlice(t *testing.T) {
 		got := MapSlice([]Foo{})
 
 		require.ElementsMatch(t, want, got)
+
+		var a []Foo
+		got = MapSlice(a)
+
+		require.ElementsMatch(t, want, got)
 	})
 	t.Run("Normal array struct", func(t *testing.T) {
 		want := []map[string]interface{}{
