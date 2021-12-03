@@ -986,6 +986,60 @@ func TestName(t *testing.T) {
 	})
 }
 
+func TestMapSlice(t *testing.T) {
+	type Foo struct {
+		A string
+		B bool
+	}
+
+	t.Run("Normal struct slice", func(t *testing.T) {
+		want := []map[string]interface{}{
+			{"A": "a1", "B": false},
+			{"A": "a2", "B": true},
+		}
+		got := MapSlice([]Foo{{"a1", false}, {"a2", true}})
+
+		require.ElementsMatch(t, want, got)
+	})
+	t.Run("Normal empty struct slice", func(t *testing.T) {
+		want := []map[string]interface{}{}
+		got := MapSlice([]Foo{})
+
+		require.ElementsMatch(t, want, got)
+	})
+	t.Run("Normal array struct", func(t *testing.T) {
+		want := []map[string]interface{}{
+			{"A": "a1", "B": false},
+			{"A": "a2", "B": true},
+		}
+		got := MapSlice([2]Foo{{"a1", false}, {"a2", true}})
+
+		require.ElementsMatch(t, want, got)
+	})
+	t.Run("Normal empty array struct", func(t *testing.T) {
+		want := []map[string]interface{}{}
+		got := MapSlice([0]Foo{})
+
+		require.ElementsMatch(t, want, got)
+	})
+
+	t.Run("Not a slice struct", func(t *testing.T) {
+		want := []map[string]interface{}{}
+		got := MapSlice("")
+
+		require.ElementsMatch(t, want, got)
+
+		got = MapSlice([]int{1, 2})
+		require.ElementsMatch(t, want, got)
+	})
+	t.Run("nil", func(t *testing.T) {
+		want := []map[string]interface{}{}
+		got := MapSlice(nil)
+
+		require.ElementsMatch(t, want, got)
+	})
+}
+
 func Test_isEmptyValue(t *testing.T) {
 	type A struct{}
 	var a = &A{}

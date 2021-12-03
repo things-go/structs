@@ -429,6 +429,31 @@ func Name(s interface{}) string {
 	return New(s).Name()
 }
 
+// MapSlice converts the given struct slice to a []map[string]interface{}.
+// For more info refer to MapSliceWithTag() method
+func MapSlice(s interface{}) []map[string]interface{} {
+	return MapSliceWithTag(s, DefaultTagName)
+}
+
+// MapSliceWithTag converts the given struct slice to a []map[string]interface{} with tagName.
+// It returns empty []map[string]interface{} if s is not a slice struct.
+func MapSliceWithTag(s interface{}, tagName string) []map[string]interface{} {
+	if s == nil {
+		return make([]map[string]interface{}, 0)
+	}
+	v := reflect.Indirect(reflect.ValueOf(s))
+	if (v.Type().Kind() == reflect.Slice && !v.IsNil() || v.Type().Kind() == reflect.Array) &&
+		v.IsValid() && v.Len() != 0 && reflect.Indirect(v.Index(0)).Kind() == reflect.Struct {
+		length := v.Len()
+		result := make([]map[string]interface{}, length)
+		for i := 0; i < length; i++ {
+			result[i] = MapWithTag(v.Index(i).Interface(), tagName)
+		}
+		return result
+	}
+	return make([]map[string]interface{}, 0)
+}
+
 // nested retrieves recursively all types for the given value and returns the
 // nested value.
 func (s *Struct) nested(val reflect.Value) interface{} {
@@ -616,7 +641,6 @@ func toString(fv reflect.Value) interface{} {
 		return strconv.FormatUint(vv.Uint(), 10)
 	case reflect.Float32, reflect.Float64:
 		return strconv.FormatFloat(vv.Float(), 'f', -1, 64)
-	// TODO: support other types
 	default:
 		s, ok := fv.Interface().(fmt.Stringer)
 		if ok {
