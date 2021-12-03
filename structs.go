@@ -333,44 +333,80 @@ func (s *Struct) Name() string {
 // Map converts the given struct to a map[string]interface{}. For more info
 // refer to Struct types Map() method. It panics if s's kind is not struct.
 func Map(s interface{}) map[string]interface{} {
-	return New(s).Map()
+	return MapWithTag(s, DefaultTagName)
+}
+
+// MapWithTag same as Map() but with tagName. It panics if s's kind is not struct.
+func MapWithTag(s interface{}, tagName string) map[string]interface{} {
+	return New(s).SetTagName(tagName).Map()
 }
 
 // FillMap is the same as Map. Instead of returning the output, it fills the
 // given map.
 func FillMap(s interface{}, out map[string]interface{}) {
-	New(s).FillMap(out)
+	FillMapWithTag(s, out, DefaultTagName)
+}
+
+// FillMapWithTag is the same as MapTag(). Instead of returning the output, it fills the
+// given map.
+func FillMapWithTag(s interface{}, out map[string]interface{}, tagName string) {
+	New(s).SetTagName(tagName).FillMap(out)
 }
 
 // Values converts the given s struct's exported field values to a []interface{}.
 // For more info refer to Struct types Values() method.  It panics if s's kind is
 // not struct.
 func Values(s interface{}) []interface{} {
-	return New(s).Values()
+	return ValuesWithTag(s, DefaultTagName)
+}
+
+// ValuesWithTag is the same as Values() but with tagName.
+func ValuesWithTag(s interface{}, tagName string) []interface{} {
+	return New(s).SetTagName(tagName).Values()
 }
 
 // Names returns a slice of field names. For more info refer to Struct types
 // Names() method.  It panics if s's kind is not struct.
 func Names(s interface{}) []string {
-	return New(s).Names()
+	return NamesWithTag(s, DefaultTagName)
+}
+
+// NamesWithTag is the same as Names() but with tagName.
+func NamesWithTag(s interface{}, tagName string) []string {
+	return New(s).SetTagName(tagName).Names()
 }
 
 // Fields returns a slice of *Field. For more info refer to Struct types
 // Fields() method.  It panics if s's kind is not struct.
 func Fields(s interface{}) []*Field {
-	return New(s).Fields()
+	return FieldsWithTag(s, DefaultTagName)
+}
+
+// FieldsWithTag is the same as Fields() but with tagName.
+func FieldsWithTag(s interface{}, tagName string) []*Field {
+	return New(s).SetTagName(tagName).Fields()
 }
 
 // IsZero returns true if all fields is equal to a zero value. For more info
 // refer to Struct types IsZero() method.  It panics if s's kind is not struct.
 func IsZero(s interface{}) bool {
-	return New(s).IsZero()
+	return IsZeroWithTag(s, DefaultTagName)
+}
+
+// IsZeroWithTag is the same as IsZero() but with tagName.
+func IsZeroWithTag(s interface{}, tagName string) bool {
+	return New(s).SetTagName(tagName).IsZero()
 }
 
 // HasZero returns true if any field is equal to a zero value. For more info
 // refer to Struct types HasZero() method.  It panics if s's kind is not struct.
 func HasZero(s interface{}) bool {
-	return New(s).HasZero()
+	return HasZeroWithTag(s, DefaultTagName)
+}
+
+// HasZeroWithTag is the same as HasZero() but with tagName.
+func HasZeroWithTag(s interface{}, tagName string) bool {
+	return New(s).SetTagName(tagName).HasZero()
 }
 
 // IsStruct returns true if the given variable is a struct or a pointer to
@@ -405,9 +441,7 @@ func (s *Struct) nested(val reflect.Value) interface{} {
 
 	switch v.Kind() {
 	case reflect.Struct:
-		n := New(val.Interface())
-		n.tagName = s.tagName
-		m := n.Map()
+		m := New(val.Interface()).SetTagName(s.tagName).Map()
 
 		// do not add the converted value if there are no exported fields, ie:
 		// time.Time

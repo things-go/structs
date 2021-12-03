@@ -142,9 +142,7 @@ func TestMap(t *testing.T) {
 			D: D{E: "e-value"},
 		}
 
-		s := New(T).SetTagName("json")
-
-		a := s.Map()
+		a := MapWithTag(T, "json")
 
 		require.ElementsMatch(t, []string{"x", "y", "z", "nested"}, getMapKey(a))
 
@@ -161,15 +159,11 @@ func TestMap(t *testing.T) {
 			X string `aa:"ax"`
 		}{"a_value"}
 
-		aStruct := New(A).SetTagName("aa")
-
 		var B = struct {
 			X string `bb:"bx"`
 		}{"b_value"}
 
-		bStruct := New(B).SetTagName("bb")
-
-		a, b := aStruct.Map(), bStruct.Map()
+		a, b := MapWithTag(A, "aa"), MapWithTag(B, "bb")
 		require.Equal(t, map[string]interface{}{"ax": "a_value"}, a)
 		require.Equal(t, map[string]interface{}{"bx": "b_value"}, b)
 	})
@@ -476,7 +470,7 @@ func TestMap(t *testing.T) {
 			Animal: a,
 		}
 
-		m := New(d).SetTagName("json").Map()
+		m := MapWithTag(d, "json")
 		_, exists := m["animal"]
 		require.True(t, exists)
 	})
