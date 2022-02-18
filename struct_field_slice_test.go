@@ -115,8 +115,8 @@ func TestStructsIntSlice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := StructsIntSlice(tt.args.s, tt.args.fieldName); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("StructsIntSlice() = %v, want %v", got, tt.want)
+			if got := IntField(tt.args.s, tt.args.fieldName); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("IntField() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -199,8 +199,8 @@ func TestStructsUintSlice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := StructsUintSlice(tt.args.s, tt.args.fieldName); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("StructsUintSlice() = %v, want %v", got, tt.want)
+			if got := UintField(tt.args.s, tt.args.fieldName); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("UintField() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -283,8 +283,8 @@ func TestStructsInt64Slice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := StructsInt64Slice(tt.args.s, tt.args.fieldName); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("StructsInt64Slice() = %v, want %v", got, tt.want)
+			if got := Int64Field(tt.args.s, tt.args.fieldName); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Int64Field() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -367,8 +367,8 @@ func TestStructsUint64Slice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := StructsUint64Slice(tt.args.s, tt.args.fieldName); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("StructsUint64Slice() = %v, want %v", got, tt.want)
+			if got := Uint64Field(tt.args.s, tt.args.fieldName); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Uint64Field() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -483,8 +483,8 @@ func TestStructStringSlice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := StructStringSlice(tt.args.s, tt.args.fieldName); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("StructStringSlice() = %v, want %v", got, tt.want)
+			if got := StringField(tt.args.s, tt.args.fieldName); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("StringField() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -499,30 +499,30 @@ func TestSlice(t *testing.T) {
 	sli := NewStructSlice([]StructMuch{{&one, errors.New("1")}, {&two, errors.New("2")}})
 	t.Log(sli.Name())
 	require.Panics(t, func() {
-		sli.StructIntSlice("Err")
+		sli.IntField("Err")
 	})
 
 	require.Panics(t, func() {
-		sli.StructStringSlice("Err")
+		sli.StringField("Err")
 	})
 	require.Panics(t, func() {
-		sli.StructStringSlice("NotExist")
+		sli.StringField("NotExist")
 	})
 
 	sli1 := NewStructSlice([]int{1, 2, 3})
 	require.Panics(t, func() {
-		sli1.StructStringSlice("not a struct or pointer of struct")
+		sli1.StringField("not a struct or pointer of struct")
 	})
 
 	sli2 := NewStructSlice([]*StructMuch{nil})
 	require.Panics(t, func() {
-		sli2.StructStringSlice("UID")
+		sli2.StringField("UID")
 	})
 }
 
 func TestIntSlice(t *testing.T) {
 	require.Panics(t, func() {
-		IntSlice([]string{"1", "2"})
+		Int([]string{"1", "2"})
 	})
 	tests := []struct {
 		name string
@@ -547,8 +547,8 @@ func TestIntSlice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := IntSlice(tt.s); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("IntSlice() = %v, want %v", got, tt.want)
+			if got := Int(tt.s); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Int() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -556,7 +556,7 @@ func TestIntSlice(t *testing.T) {
 
 func TestUintSlice(t *testing.T) {
 	require.Panics(t, func() {
-		UintSlice([]string{"1", "2"})
+		Uint([]string{"1", "2"})
 	})
 	tests := []struct {
 		name string
@@ -581,8 +581,8 @@ func TestUintSlice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := UintSlice(tt.s); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("UintSlice() = %v, want %v", got, tt.want)
+			if got := Uint(tt.s); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Uint() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -590,7 +590,7 @@ func TestUintSlice(t *testing.T) {
 
 func TestInt8Slice(t *testing.T) {
 	require.Panics(t, func() {
-		Int8Slice([]string{"1", "2"})
+		Int8([]string{"1", "2"})
 	})
 	tests := []struct {
 		name string
@@ -615,8 +615,8 @@ func TestInt8Slice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Int8Slice(tt.s); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Int8Slice() = %v, want %v", got, tt.want)
+			if got := Int8(tt.s); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Int8() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -624,7 +624,7 @@ func TestInt8Slice(t *testing.T) {
 
 func TestUint8Slice(t *testing.T) {
 	require.Panics(t, func() {
-		Uint8Slice([]string{"1", "2"})
+		Uint8([]string{"1", "2"})
 	})
 	tests := []struct {
 		name string
@@ -649,8 +649,8 @@ func TestUint8Slice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Uint8Slice(tt.s); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Uint8Slice() = %v, want %v", got, tt.want)
+			if got := Uint8(tt.s); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Uint8() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -658,7 +658,7 @@ func TestUint8Slice(t *testing.T) {
 
 func TestInt16Slice(t *testing.T) {
 	require.Panics(t, func() {
-		Int16Slice([]string{"1", "2"})
+		Int16([]string{"1", "2"})
 	})
 	tests := []struct {
 		name string
@@ -683,8 +683,8 @@ func TestInt16Slice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Int16Slice(tt.s); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Int16Slice() = %v, want %v", got, tt.want)
+			if got := Int16(tt.s); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Int16() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -692,7 +692,7 @@ func TestInt16Slice(t *testing.T) {
 
 func TestUint16Slice(t *testing.T) {
 	require.Panics(t, func() {
-		Uint16Slice([]string{"1", "2"})
+		Uint16([]string{"1", "2"})
 	})
 	tests := []struct {
 		name string
@@ -717,8 +717,8 @@ func TestUint16Slice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Uint16Slice(tt.s); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Uint16Slice() = %v, want %v", got, tt.want)
+			if got := Uint16(tt.s); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Uint16() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -726,7 +726,7 @@ func TestUint16Slice(t *testing.T) {
 
 func TestInt32Slice(t *testing.T) {
 	require.Panics(t, func() {
-		Int32Slice([]string{"1", "2"})
+		Int32([]string{"1", "2"})
 	})
 	tests := []struct {
 		name string
@@ -751,8 +751,8 @@ func TestInt32Slice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Int32Slice(tt.s); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Int32Slice() = %v, want %v", got, tt.want)
+			if got := Int32(tt.s); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Int32() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -760,7 +760,7 @@ func TestInt32Slice(t *testing.T) {
 
 func TestUint32Slice(t *testing.T) {
 	require.Panics(t, func() {
-		Uint32Slice([]string{"1", "2"})
+		Uint32([]string{"1", "2"})
 	})
 	tests := []struct {
 		name string
@@ -785,8 +785,8 @@ func TestUint32Slice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Uint32Slice(tt.s); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Uint32Slice() = %v, want %v", got, tt.want)
+			if got := Uint32(tt.s); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Uint32() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -794,7 +794,7 @@ func TestUint32Slice(t *testing.T) {
 
 func TestInt64Slice(t *testing.T) {
 	require.Panics(t, func() {
-		Int64Slice([]string{"1", "2"})
+		Int64([]string{"1", "2"})
 	})
 	tests := []struct {
 		name string
@@ -819,8 +819,8 @@ func TestInt64Slice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Int64Slice(tt.s); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Int64Slice() = %v, want %v", got, tt.want)
+			if got := Int64(tt.s); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Int64() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -828,7 +828,7 @@ func TestInt64Slice(t *testing.T) {
 
 func TestUint64Slice(t *testing.T) {
 	require.Panics(t, func() {
-		Uint64Slice([]string{"1", "2"})
+		Uint64([]string{"1", "2"})
 	})
 	tests := []struct {
 		name string
@@ -853,8 +853,8 @@ func TestUint64Slice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Uint64Slice(tt.s); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Uint64Slice() = %v, want %v", got, tt.want)
+			if got := Uint64(tt.s); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Uint64() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -862,7 +862,7 @@ func TestUint64Slice(t *testing.T) {
 
 func TestStringSlice(t *testing.T) {
 	require.Panics(t, func() {
-		StringSlice([]struct{}{{}})
+		String([]struct{}{{}})
 	})
 	tests := []struct {
 		name string
@@ -897,8 +897,8 @@ func TestStringSlice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := StringSlice(tt.s); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("StructStringSlice() = %v, want %v", got, tt.want)
+			if got := String(tt.s); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("StringField() = %v, want %v", got, tt.want)
 			}
 		})
 	}

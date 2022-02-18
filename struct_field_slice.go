@@ -5,84 +5,84 @@ import (
 	"strconv"
 )
 
-// StructsIntSlice returns a slice of int. For more info refer to Slice types StructIntSlice() method.
-func StructsIntSlice(s interface{}, fieldName string) []int {
-	return NewStructSlice(s).StructIntSlice(fieldName)
+// IntField returns a slice of int. For more info refer to Slice types IntField() method.
+func IntField(s interface{}, fieldName string) []int {
+	return NewStructSlice(s).IntField(fieldName)
 }
 
-// StructsUintSlice returns a slice of int. For more info refer to Slice types v() method.
-func StructsUintSlice(s interface{}, fieldName string) []uint {
-	return NewStructSlice(s).StructUintSlice(fieldName)
+// UintField returns a slice of int. For more info refer to Slice types v() method.
+func UintField(s interface{}, fieldName string) []uint {
+	return NewStructSlice(s).UintField(fieldName)
 }
 
-// StructsInt64Slice returns a slice of int64. For more info refer to Slice types StructInt64Slice() method.
-func StructsInt64Slice(s interface{}, fieldName string) []int64 {
-	return NewStructSlice(s).StructInt64Slice(fieldName)
+// Int64Field returns a slice of int64. For more info refer to Slice types Int64Field() method.
+func Int64Field(s interface{}, fieldName string) []int64 {
+	return NewStructSlice(s).Int64Field(fieldName)
 }
 
-// StructsUint64Slice returns a slice of int64. For more info refer to Slice types StructUint64Slice() method.
-func StructsUint64Slice(s interface{}, fieldName string) []uint64 {
-	return NewStructSlice(s).StructUint64Slice(fieldName)
+// Uint64Field returns a slice of int64. For more info refer to Slice types Uint64Field() method.
+func Uint64Field(s interface{}, fieldName string) []uint64 {
+	return NewStructSlice(s).Uint64Field(fieldName)
 }
 
-// StructStringSlice returns a slice of int64. For more info refer to Slice types StructStringSlice() method.
-func StructStringSlice(s interface{}, fieldName string) []string {
-	return NewStructSlice(s).StructStringSlice(fieldName)
+// StringField returns a slice of int64. For more info refer to Slice types StringField() method.
+func StringField(s interface{}, fieldName string) []string {
+	return NewStructSlice(s).StringField(fieldName)
 }
 
-// IntSlice returns a slice of int. For more info refer to Slice types IntSlice() method.
-func IntSlice(s interface{}) []int {
+// Int returns a slice of int. For more info refer to Slice types Int() method.
+func Int(s interface{}) []int {
 	return NewStructSlice(s).IntSlice()
 }
 
-// UintSlice returns a slice of uint. For more info refer to Slice types UintSlice() method.
-func UintSlice(s interface{}) []uint {
-	return NewStructSlice(s).UintSlice()
+// Uint returns a slice of uint. For more info refer to Slice types Uint() method.
+func Uint(s interface{}) []uint {
+	return NewStructSlice(s).Uint()
 }
 
-// Int8Slice returns a slice of int8. For more info refer to Slice types Int8Slice() method.
-func Int8Slice(s interface{}) []int8 {
-	return NewStructSlice(s).Int8Slice()
+// Int8 returns a slice of int8. For more info refer to Slice types Int8() method.
+func Int8(s interface{}) []int8 {
+	return NewStructSlice(s).Int8()
 }
 
-// Uint8Slice returns a slice of uint8. For more info refer to Slice types Uint8Slice() method.
-func Uint8Slice(s interface{}) []uint8 {
-	return NewStructSlice(s).Uint8Slice()
+// Uint8 returns a slice of uint8. For more info refer to Slice types Uint8() method.
+func Uint8(s interface{}) []uint8 {
+	return NewStructSlice(s).Uint8()
 }
 
-// Int16Slice returns a slice of int16. For more info refer to Slice types Int16Slice() method.
-func Int16Slice(s interface{}) []int16 {
-	return NewStructSlice(s).Int16Slice()
+// Int16 returns a slice of int16. For more info refer to Slice types Int16() method.
+func Int16(s interface{}) []int16 {
+	return NewStructSlice(s).Int16()
 }
 
-// Uint16Slice returns a slice of uint16. For more info refer to Slice types Uint16Slice() method.
-func Uint16Slice(s interface{}) []uint16 {
-	return NewStructSlice(s).Uint16Slice()
+// Uint16 returns a slice of uint16. For more info refer to Slice types Uint16() method.
+func Uint16(s interface{}) []uint16 {
+	return NewStructSlice(s).Uint16()
 }
 
-// Int32Slice returns a slice of int32. For more info refer to Slice types Int32Slice() method.
-func Int32Slice(s interface{}) []int32 {
-	return NewStructSlice(s).Int32Slice()
+// Int32 returns a slice of int32. For more info refer to Slice types Int32() method.
+func Int32(s interface{}) []int32 {
+	return NewStructSlice(s).Int32()
 }
 
-// Uint32Slice returns a slice of uint32. For more info refer to Slice types Uint32Slice() method.
-func Uint32Slice(s interface{}) []uint32 {
-	return NewStructSlice(s).Uint32Slice()
+// Uint32 returns a slice of uint32. For more info refer to Slice types Uint32() method.
+func Uint32(s interface{}) []uint32 {
+	return NewStructSlice(s).Uint32()
 }
 
-// Int64Slice returns a slice of int64. For more info refer to Slice types Int64Slice() method.
-func Int64Slice(s interface{}) []int64 {
-	return NewStructSlice(s).Int64Slice()
+// Int64 returns a slice of int64. For more info refer to Slice types Int64() method.
+func Int64(s interface{}) []int64 {
+	return NewStructSlice(s).Int64()
 }
 
-// Uint64Slice returns a slice of uint64. For more info refer to Slice types Uint64Slice() method.
-func Uint64Slice(s interface{}) []uint64 {
-	return NewStructSlice(s).Uint64Slice()
+// Uint64 returns a slice of uint64. For more info refer to Slice types Uint64() method.
+func Uint64(s interface{}) []uint64 {
+	return NewStructSlice(s).Uint64()
 }
 
-// StringSlice returns a slice of uint64. For more info refer to Slice types StringSlice() method.
-func StringSlice(s interface{}) []string {
-	return NewStructSlice(s).StringSlice()
+// String returns a slice of uint64. For more info refer to Slice types String() method.
+func String(s interface{}) []string {
+	return NewStructSlice(s).String()
 }
 
 // StructSlice hold a struct slice reflect.value
@@ -100,9 +100,9 @@ func NewStructSlice(s interface{}) *StructSlice {
 	return &StructSlice{v}
 }
 
-// StructIntSlice extracts the given s slice's every element, which is struct, to []int by the field.
+// IntField extracts the given s slice's every element, which is struct, to []int by the field.
 // It panics if the s's element is not struct, or field is not exits, or the value of field is not integer.
-func (s *StructSlice) StructIntSlice(fieldName string) []int {
+func (s *StructSlice) IntField(fieldName string) []int {
 	length := s.value.Len()
 	slice := make([]int, length)
 
@@ -114,9 +114,9 @@ func (s *StructSlice) StructIntSlice(fieldName string) []int {
 	return slice
 }
 
-// StructUintSlice extracts the given s slice's every element, which is struct, to []uint by the field.
+// UintField extracts the given s slice's every element, which is struct, to []uint by the field.
 // It panics if the s's element is not struct, or field is not exits, or the value of field is not integer.
-func (s *StructSlice) StructUintSlice(fieldName string) []uint {
+func (s *StructSlice) UintField(fieldName string) []uint {
 	length := s.value.Len()
 	slice := make([]uint, length)
 
@@ -128,9 +128,9 @@ func (s *StructSlice) StructUintSlice(fieldName string) []uint {
 	return slice
 }
 
-// StructInt64Slice extracts the given s slice's every element, which is struct, to []int64 by the field.
+// Int64Field extracts the given s slice's every element, which is struct, to []int64 by the field.
 // It panics if the s's element is not struct, or field is not exits, or the value of field is not integer.
-func (s *StructSlice) StructInt64Slice(fieldName string) []int64 {
+func (s *StructSlice) Int64Field(fieldName string) []int64 {
 	length := s.value.Len()
 	slice := make([]int64, length)
 
@@ -142,9 +142,9 @@ func (s *StructSlice) StructInt64Slice(fieldName string) []int64 {
 	return slice
 }
 
-// StructUint64Slice extracts the given s slice's every element, which is struct, to []int64 by the field.
+// Uint64Field extracts the given s slice's every element, which is struct, to []int64 by the field.
 // It panics if the s's element is not struct, or field is not exits, or the value of field is not integer.
-func (s *StructSlice) StructUint64Slice(fieldName string) []uint64 {
+func (s *StructSlice) Uint64Field(fieldName string) []uint64 {
 	length := s.value.Len()
 	slice := make([]uint64, length)
 
@@ -156,9 +156,9 @@ func (s *StructSlice) StructUint64Slice(fieldName string) []uint64 {
 	return slice
 }
 
-// StructStringSlice extracts the given s slice's every element, which is struct, to []string by the field.
+// StringField extracts the given s slice's every element, which is struct, to []string by the field.
 // It panics if the s's element is not struct, or field is not exits, or the value of field is not integer or string.
-func (s *StructSlice) StructStringSlice(fieldName string) []string {
+func (s *StructSlice) StringField(fieldName string) []string {
 	length := s.value.Len()
 	slice := make([]string, length)
 
@@ -176,13 +176,13 @@ func (s *StructSlice) StructStringSlice(fieldName string) []string {
 		case reflect.Float64:
 			slice[i] = strconv.FormatFloat(v.Float(), 'f', -1, 64)
 		default:
-			panic("StructStringSlice: the value of field is not integer or float or string.")
+			panic("StringField: the value of field is not integer or float or string.")
 		}
 	}
 	return slice
 }
 
-// IntSlice extracts the given s slice's every element, which is integer or float, to []int by the field.
+// Int extracts the given s slice's every element, which is integer or float, to []int by the field.
 // It panics if the s's element is not integer or float, or field is not invalid.
 func (s *StructSlice) IntSlice() []int {
 	length := s.value.Len()
@@ -198,15 +198,15 @@ func (s *StructSlice) IntSlice() []int {
 		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 			slice[i] = int(v.Uint())
 		default:
-			panic("IntSlice: the value of field is not integer or float.")
+			panic("Int: the value of field is not integer or float.")
 		}
 	}
 	return slice
 }
 
-// UintSlice extracts the given s slice's every element, which is integer or float, to []uint by the field.
+// Uint extracts the given s slice's every element, which is integer or float, to []uint by the field.
 // It panics if the s's element is not integer or float, or field is not invalid.
-func (s *StructSlice) UintSlice() []uint {
+func (s *StructSlice) Uint() []uint {
 	length := s.value.Len()
 	slice := make([]uint, length)
 
@@ -220,15 +220,15 @@ func (s *StructSlice) UintSlice() []uint {
 		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 			slice[i] = uint(v.Uint())
 		default:
-			panic("UintSlice: the value of field is not integer or float.")
+			panic("Uint: the value of field is not integer or float.")
 		}
 	}
 	return slice
 }
 
-// Int8Slice extracts the given s slice's every element, which is integer or float, to []int8 by the field.
+// Int8 extracts the given s slice's every element, which is integer or float, to []int8 by the field.
 // It panics if the s's element is not integer or float, or field is not invalid.
-func (s *StructSlice) Int8Slice() []int8 {
+func (s *StructSlice) Int8() []int8 {
 	length := s.value.Len()
 	slice := make([]int8, length)
 
@@ -242,15 +242,15 @@ func (s *StructSlice) Int8Slice() []int8 {
 		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 			slice[i] = int8(v.Uint())
 		default:
-			panic("Int8Slice: the value of field is not integer or float.")
+			panic("Int8: the value of field is not integer or float.")
 		}
 	}
 	return slice
 }
 
-// Uint8Slice extracts the given s slice's every element, which is integer or float, to []uint8 by the field.
+// Uint8 extracts the given s slice's every element, which is integer or float, to []uint8 by the field.
 // It panics if the s's element is not integer or float, or field is not invalid.
-func (s *StructSlice) Uint8Slice() []uint8 {
+func (s *StructSlice) Uint8() []uint8 {
 	length := s.value.Len()
 	slice := make([]uint8, length)
 
@@ -264,15 +264,15 @@ func (s *StructSlice) Uint8Slice() []uint8 {
 		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 			slice[i] = uint8(v.Uint())
 		default:
-			panic("Uint8Slice: the value of field is not integer or float.")
+			panic("Uint8: the value of field is not integer or float.")
 		}
 	}
 	return slice
 }
 
-// Int16Slice extracts the given s slice's every element, which is integer or float, to []int16 by the field.
+// Int16 extracts the given s slice's every element, which is integer or float, to []int16 by the field.
 // It panics if the s's element is not integer or float, or field is not invalid.
-func (s *StructSlice) Int16Slice() []int16 {
+func (s *StructSlice) Int16() []int16 {
 	length := s.value.Len()
 	slice := make([]int16, length)
 
@@ -286,15 +286,15 @@ func (s *StructSlice) Int16Slice() []int16 {
 		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 			slice[i] = int16(v.Uint())
 		default:
-			panic("Int16Slice: the value of field is not integer or float.")
+			panic("Int16: the value of field is not integer or float.")
 		}
 	}
 	return slice
 }
 
-// Uint16Slice extracts the given s slice's every element, which is integer or float, to []uint16 by the field.
+// Uint16 extracts the given s slice's every element, which is integer or float, to []uint16 by the field.
 // It panics if the s's element is not integer or float, or field is not invalid.
-func (s *StructSlice) Uint16Slice() []uint16 {
+func (s *StructSlice) Uint16() []uint16 {
 	length := s.value.Len()
 	slice := make([]uint16, length)
 
@@ -308,15 +308,15 @@ func (s *StructSlice) Uint16Slice() []uint16 {
 		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 			slice[i] = uint16(v.Uint())
 		default:
-			panic("Uint16Slice: the value of field is not integer or float.")
+			panic("Uint16: the value of field is not integer or float.")
 		}
 	}
 	return slice
 }
 
-// Int32Slice extracts the given s slice's every element, which is integer or float, to []int32 by the field.
+// Int32 extracts the given s slice's every element, which is integer or float, to []int32 by the field.
 // It panics if the s's element is not integer or float, or field is not invalid.
-func (s *StructSlice) Int32Slice() []int32 {
+func (s *StructSlice) Int32() []int32 {
 	length := s.value.Len()
 	slice := make([]int32, length)
 
@@ -330,15 +330,15 @@ func (s *StructSlice) Int32Slice() []int32 {
 		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 			slice[i] = int32(v.Uint())
 		default:
-			panic("Int32Slice: the value of field is not integer or float.")
+			panic("Int32: the value of field is not integer or float.")
 		}
 	}
 	return slice
 }
 
-// Uint32Slice extracts the given s slice's every element, which is integer or float, to []uint32 by the field.
+// Uint32 extracts the given s slice's every element, which is integer or float, to []uint32 by the field.
 // It panics if the s's element is not integer or float, or field is not invalid.
-func (s *StructSlice) Uint32Slice() []uint32 {
+func (s *StructSlice) Uint32() []uint32 {
 	length := s.value.Len()
 	slice := make([]uint32, length)
 
@@ -352,15 +352,15 @@ func (s *StructSlice) Uint32Slice() []uint32 {
 		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 			slice[i] = uint32(v.Uint())
 		default:
-			panic("Uint32Slice: the value of field is not integer or float.")
+			panic("Uint32: the value of field is not integer or float.")
 		}
 	}
 	return slice
 }
 
-// Int64Slice extracts the given s slice's every element, which is integer or float, to []int64 by the field.
+// Int64 extracts the given s slice's every element, which is integer or float, to []int64 by the field.
 // It panics if the s's element is not integer or float, or field is not invalid.
-func (s *StructSlice) Int64Slice() []int64 {
+func (s *StructSlice) Int64() []int64 {
 	length := s.value.Len()
 	slice := make([]int64, length)
 
@@ -374,15 +374,15 @@ func (s *StructSlice) Int64Slice() []int64 {
 		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 			slice[i] = int64(v.Uint())
 		default:
-			panic("Int64Slice: the value of field is not integer or float.")
+			panic("Int64: the value of field is not integer or float.")
 		}
 	}
 	return slice
 }
 
-// Uint64Slice extracts the given s slice's every element, which is integer or float, to []uint64 by the field.
+// Uint64 extracts the given s slice's every element, which is integer or float, to []uint64 by the field.
 // It panics if the s's element is not integer or float, or field is not invalid.
-func (s *StructSlice) Uint64Slice() []uint64 {
+func (s *StructSlice) Uint64() []uint64 {
 	length := s.value.Len()
 	slice := make([]uint64, length)
 
@@ -396,15 +396,15 @@ func (s *StructSlice) Uint64Slice() []uint64 {
 		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 			slice[i] = v.Uint()
 		default:
-			panic("Uint64Slice: the value of field is not integer or float.")
+			panic("Uint64: the value of field is not integer or float.")
 		}
 	}
 	return slice
 }
 
-// StringSlice extracts the given s slice's every element, which is integer or float or string, to []string by the field.
+// String extracts the given s slice's every element, which is integer or float or string, to []string by the field.
 // It panics if the s's element is not integer or float, string, or field is not invalid.
-func (s *StructSlice) StringSlice() []string {
+func (s *StructSlice) String() []string {
 	length := s.value.Len()
 	slice := make([]string, length)
 
@@ -422,7 +422,7 @@ func (s *StructSlice) StringSlice() []string {
 		case reflect.Float64:
 			slice[i] = strconv.FormatFloat(v.Float(), 'f', -1, 64)
 		default:
-			panic("StringSlice: the value of field is not integer or float or string.")
+			panic("String: the value of field is not integer or float or string.")
 		}
 	}
 	return slice

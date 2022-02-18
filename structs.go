@@ -21,7 +21,7 @@ type Struct struct {
 	tagName string
 }
 
-// New returns a new *Struct with the struct s. It panics if the s's kind is
+// New returns a new *Struct with the struct. It panics if the s's kind is
 // not struct.
 func New(s interface{}) *Struct {
 	value, err := structVal(s)
