@@ -10,7 +10,7 @@ func IntField(s interface{}, fieldName string) []int {
 	return NewStructSlice(s).IntField(fieldName)
 }
 
-// UintField returns a slice of int. For more info refer to Slice types v() method.
+// UintField returns a slice of uint. For more info refer to Slice types v() method.
 func UintField(s interface{}, fieldName string) []uint {
 	return NewStructSlice(s).UintField(fieldName)
 }
@@ -20,12 +20,12 @@ func Int64Field(s interface{}, fieldName string) []int64 {
 	return NewStructSlice(s).Int64Field(fieldName)
 }
 
-// Uint64Field returns a slice of int64. For more info refer to Slice types Uint64Field() method.
+// Uint64Field returns a slice of uint64. For more info refer to Slice types Uint64Field() method.
 func Uint64Field(s interface{}, fieldName string) []uint64 {
 	return NewStructSlice(s).Uint64Field(fieldName)
 }
 
-// StringField returns a slice of int64. For more info refer to Slice types StringField() method.
+// StringField returns a slice of string. For more info refer to Slice types StringField() method.
 func StringField(s interface{}, fieldName string) []string {
 	return NewStructSlice(s).StringField(fieldName)
 }
@@ -80,7 +80,7 @@ func Uint64(s interface{}) []uint64 {
 	return NewStructSlice(s).Uint64()
 }
 
-// String returns a slice of uint64. For more info refer to Slice types String() method.
+// String returns a slice of string. For more info refer to Slice types String() method.
 func String(s interface{}) []string {
 	return NewStructSlice(s).String()
 }
@@ -142,7 +142,7 @@ func (s *StructSlice) Int64Field(fieldName string) []int64 {
 	return slice
 }
 
-// Uint64Field extracts the given s slice's every element, which is struct, to []int64 by the field.
+// Uint64Field extracts the given s slice's every element, which is struct, to []uint64 by the field.
 // It panics if the s's element is not struct, or field is not exits, or the value of field is not integer.
 func (s *StructSlice) Uint64Field(fieldName string) []uint64 {
 	length := s.value.Len()
