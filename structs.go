@@ -26,7 +26,7 @@ type Struct struct {
 func New(s interface{}) *Struct {
 	value, err := structVal(s)
 	if err != nil {
-		panic(err)
+		panic("structs: field must be a struct, " + err.Error())
 	}
 	return &Struct{
 		s,
@@ -100,8 +100,7 @@ func (s *Struct) FillMap(out map[string]interface{}) {
 		return
 	}
 
-	fields := getStructFields(s.value, s.tagName)
-	for _, field := range fields {
+	iteratorStructField(s.value, s.tagName, func(field reflect.StructField) bool {
 		name := field.Name
 		val := s.value.FieldByName(name)
 
@@ -113,12 +112,12 @@ func (s *Struct) FillMap(out map[string]interface{}) {
 		// if the value is a zero value and the field is marked as omitempty do
 		// not include
 		if tagOpts.Contains("omitempty") && isEmptyValue(val) {
-			continue
+			return true
 		}
 		if tagOpts.Contains("string") {
 			if str := toString(val); str != nil {
 				out[name] = str
-				continue
+				return true
 			}
 		}
 
@@ -140,7 +139,8 @@ func (s *Struct) FillMap(out map[string]interface{}) {
 		} else {
 			out[name] = finalVal
 		}
-	}
+		return true
+	})
 }
 
 // Values converts the given s struct's exported field values to a []interface{}.  A
@@ -166,9 +166,8 @@ func (s *Struct) FillMap(out map[string]interface{}) {
 // Note that only exported fields of a struct can be accessed, non exported
 // fields  will be neglected.
 func (s *Struct) Values() []interface{} {
-	fields := getStructFields(s.value, s.tagName)
-	t := make([]interface{}, 0, len(fields))
-	for _, field := range fields {
+	t := make([]interface{}, 0, s.value.NumField())
+	iteratorStructField(s.value, s.tagName, func(field reflect.StructField) bool {
 		val := s.value.FieldByName(field.Name)
 
 		_, tagOpts := parseTag(field.Tag.Get(s.tagName))
@@ -176,12 +175,12 @@ func (s *Struct) Values() []interface{} {
 		// if the value is a zero value and the field is marked as omitempty do
 		// not include
 		if tagOpts.Contains("omitempty") && isEmptyValue(val) {
-			continue
+			return true
 		}
 		if tagOpts.Contains("string") {
 			if str := toString(val); str != nil {
 				t = append(t, str)
-				continue
+				return true
 			}
 		}
 
@@ -192,7 +191,8 @@ func (s *Struct) Values() []interface{} {
 		} else {
 			t = append(t, val.Interface())
 		}
-	}
+		return true
+	})
 	return t
 }
 
@@ -266,24 +266,28 @@ func (s *Struct) Field(name string) (*Field, bool) {
 //
 // Note that only exported fields of a struct can be accessed, non exported
 // fields  will be neglected. It panics if s's kind is not struct.
-func (s *Struct) IsZero() bool {
-	fields := getStructFields(s.value, s.tagName)
-	for _, field := range fields {
+func (s *Struct) IsZero() (b bool) {
+	b = true
+	iteratorStructField(s.value, s.tagName, func(field reflect.StructField) bool {
 		val := s.value.FieldByName(field.Name)
 
 		_, tagOpts := parseTag(field.Tag.Get(s.tagName))
 		if IsStruct(val.Interface()) && !tagOpts.Contains("omitnested") {
 			ok := IsZero(val.Interface())
 			if !ok {
+				b = false
 				return false
 			}
-			continue
+			return true
 		}
 		if !isEmptyWithAll(val) {
+			b = false
 			return false
 		}
-	}
-	return true
+		return true
+	})
+
+	return b
 }
 
 // HasZero returns true if a field in a struct is not initialized (zero value).
@@ -302,26 +306,27 @@ func (s *Struct) IsZero() bool {
 //
 // Note that only exported fields of a struct can be accessed, non exported
 // fields  will be neglected. It panics if s's kind is not struct.
-func (s *Struct) HasZero() bool {
-	fields := getStructFields(s.value, s.tagName)
-	for _, field := range fields {
+func (s *Struct) HasZero() (b bool) {
+	iteratorStructField(s.value, s.tagName, func(field reflect.StructField) bool {
 		val := s.value.FieldByName(field.Name)
 
 		_, tagOpts := parseTag(field.Tag.Get(s.tagName))
-
 		if IsStruct(val.Interface()) && !tagOpts.Contains("omitnested") {
 			ok := HasZero(val.Interface())
 			if ok {
-				return true
+				b = true
+				return false
 			}
-			continue
+			return true
 		}
 
 		if isEmptyWithAll(val) {
-			return true
+			b = true
+			return false
 		}
-	}
-	return false
+		return true
+	})
+	return b
 }
 
 // Name returns the map's type name within its package. For more info refer
@@ -421,6 +426,16 @@ func IsStruct(s interface{}) bool {
 		return false
 	}
 	return v.Kind() == reflect.Struct
+}
+
+// IteratorStructField iterates over struct fields and calls fn func for each.
+// It panics if the s's kind is not struct.
+func IteratorStructField(s interface{}, tagName string, f func(fv reflect.StructField) bool) {
+	v, err := structVal(s)
+	if err != nil {
+		panic("structs: field must be a struct, " + err.Error())
+	}
+	iteratorStructField(v, tagName, f)
 }
 
 // Name returns the map's type name within its package. It returns an
@@ -565,15 +580,9 @@ func getFields(v reflect.Value, tagName string) []*Field {
 	return fields
 }
 
-// getStructFields returns the exported struct fields for a given s struct. This
-// is a convenient helper method to avoid duplicate code in some functions.
-func getStructFields(v reflect.Value, tagName string) []reflect.StructField {
-	t := v.Type()
-	numField := t.NumField()
-
-	f := make([]reflect.StructField, 0, numField)
-	for i := 0; i < numField; i++ {
-		field := t.Field(i)
+func iteratorStructField(v reflect.Value, tagName string, f func(fv reflect.StructField) bool) {
+	for i := 0; i < v.NumField(); i++ {
+		field := v.Type().Field(i)
 		fv := v.Field(i)
 		// we can't access the value of unexported fields
 		if !fv.CanInterface() || field.PkgPath != "" {
@@ -583,9 +592,10 @@ func getStructFields(v reflect.Value, tagName string) []reflect.StructField {
 		if tag := field.Tag.Get(tagName); tag == "-" {
 			continue
 		}
-		f = append(f, field)
+		if !f(field) {
+			break
+		}
 	}
-	return f
 }
 
 func isEmptyValue(v reflect.Value) bool {

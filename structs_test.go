@@ -969,6 +969,30 @@ func TestStruct(t *testing.T) {
 	require.False(t, IsStruct((*struct{})(nil)))
 }
 
+func TestIteratorStructField(t *testing.T) {
+	t.Run("not a struct", func(t *testing.T) {
+		require.Panics(t, func() {
+			IteratorStructField(1, "map", func(field reflect.StructField) bool {
+				return true
+			})
+		})
+	})
+	t.Run("Normal", func(t *testing.T) {
+		type Foo struct {
+			A string
+			B bool
+			C int
+		}
+
+		l := 0
+		IteratorStructField(&Foo{}, "map", func(field reflect.StructField) bool {
+			l++
+			return true
+		})
+		require.Equal(t, 3, l)
+	})
+}
+
 func TestName(t *testing.T) {
 	type Foo struct {
 		A string
